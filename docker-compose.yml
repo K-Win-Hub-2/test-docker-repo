@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+    backend1:
+        build:
+            context: ./server
+        ports:
+            - "9091:9090"     # Map to different ports to avoid conflicts
+        networks:
+            - backend-network
+    backend2:
+        build:
+            context: ./server
+        ports:
+            - "9092:9090"     # Map to different ports
+        networks:
+            - backend-network
+
+    nginx:
+        restart: always
+        build:
+            context: ./nginx
+        ports:
+            - "80:80"
+        depends_on:
+            - backend1
+            - backend2
+        networks:
+            - backend-network
+
+networks:
+  backend-network: 
+    driver: bridge
